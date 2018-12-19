@@ -17,6 +17,25 @@
   color: white;
 }
 
+
+
 .App-link {
   color: #61dafb;
+}
+
+@keyframes swirl {
+  0% {transform: rotate(360deg)}
+  100% {transform: rotate(0deg)}
+}
+
+
+
+.loading {
+  width: 10%;
+  height: 10%;
+  animation-name: swirl;
+  margin: 20px;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }

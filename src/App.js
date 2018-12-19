@@ -22,10 +22,12 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1>NC Crime</h1>
+          <h1 className='graph'>NC Crime</h1>
         </header>
         <DataSelector setMonth={this.setMonth}/>
-        {this.state.crimeData.length > 0 &&<DataVisualisation crimeData={this.state.crimeData} selectedMonth={this.state.selectedMonth.month} crimeCategories={this.state.crimeCategories} /> || <p>Loading...</p>}
+        {this.state.crimeData.length > 0 &&<DataVisualisation className='graph' crimeData={this.state.crimeData} selectedMonth={this.state.selectedMonth.month} crimeCategories={this.state.crimeCategories} /> || <div><img className='loading' src='http://i.imgur.com/g7TUsLv.png'></img>
+        <p>Pls wait, much loading, very api, wow</p></div>}
+        
       </div>
     );
   }

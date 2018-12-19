@@ -24,7 +24,7 @@ class DataVisualisation extends Component {
       datasets: [
         {
           label: 'My First dataset',
-          backgroundColor: 'rgba(255,99,132,0.2)',
+          backgroundColor: labels.map(()=>{return `rgba(${Math.round(Math.random()*255)},${Math.round(Math.random()*255)},${Math.round(Math.random()*255)},1)`}),
           borderColor: 'rgba(255,99,132,1)',
           borderWidth: 1,
           hoverBackgroundColor: 'rgba(255,99,132,0.4)',
