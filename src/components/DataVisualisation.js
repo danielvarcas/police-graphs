@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 
 class DataVisualisation extends Component {
   render() {
     console.log('PROPS:')
     console.log(this.props)
     // console.log(props)
-    // const labels = crimeCategories.map(category => category.name)
-    // console.log(labels)
+    const categoriesForGraph = this.props.crimeCategories.slice(1)
+    const labels = categoriesForGraph.map(category => category.name)
+    console.log(labels)
+
+    const dataCount = this.props.crimeData.reduce((acc, datum)=>{
+      const category = datum.category
+      if (!acc[category]){acc[category] = 1}
+      else {acc[category]++}
+      return acc
+    }, {})
+    console.log(dataCount)
 
     const data = {
-      labels: ['hi'],
+      labels: labels,
       datasets: [
         {
           label: 'My First dataset',
@@ -20,14 +29,14 @@ class DataVisualisation extends Component {
           borderWidth: 1,
           hoverBackgroundColor: 'rgba(255,99,132,0.4)',
           hoverBorderColor: 'rgba(255,99,132,1)',
-          data: [65, 59, 80, 81, 56, 55, 40]
+          data: Object.values(dataCount)
         }
       ]
     };
     return (
       <div>
         <h2>Bar Example (custom size)</h2>
-        <Bar
+        <Pie
           data={data}
           width={100}
           height={50}

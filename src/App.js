@@ -17,13 +17,14 @@ class App extends Component {
         <header className="App-header">
           <h1>Hello World</h1>
         </header>
-        <DataVisualisation crimeCategories={this.state.crimeCategories} />
+        {this.state.crimeData &&<DataVisualisation crimeData={this.state.crimeData} crimeCategories={this.state.crimeCategories} />}
       </div>
     );
   }
 
   componentDidMount() {
     this.getCrimeCategories()
+    this.getCrimeData()
   }
   getCrimeCategories() {
     Axios.get('https://data.police.uk/api/crime-categories')
@@ -39,6 +40,13 @@ class App extends Component {
         console.log(this.state)
       })
       .catch(console.log('catch block reached'))
+  }
+
+  getCrimeData = () => {
+    Axios.get('https://data.police.uk/api/crimes-street/all-crime?lat=53.4860839&lng=-2.242446').then((response)=>{
+    console.log(response)
+    this.setState({crimeData: response.data})
+    })
   }
 }
 
