@@ -1,27 +1,44 @@
+// Street crimes within 1 mile of Northcoders: 
+// https://data.police.uk/api/crimes-street/all-crime?lat=53.4860839&lng=-2.242446
+
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import DataVisualisation from './components/DataVisualisation';
+import Axios from 'axios';
 
 class App extends Component {
+  state = {
+    crimeCategories: [{}]
+  }
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <h1>Hello World</h1>
         </header>
+        <DataVisualisation crimeCategories={this.state.crimeCategories} />
       </div>
     );
+  }
+
+  componentDidMount() {
+    this.getCrimeCategories()
+  }
+  getCrimeCategories() {
+    Axios.get('https://data.police.uk/api/crime-categories')
+      .then((response) => {
+        console.log('RESPONSE:')
+        console.log(response)
+        this.setState({
+          crimeCategories: response.data
+        })
+      })
+      .then(() => {
+        console.log('STATE:')
+        console.log(this.state)
+      })
+      .catch(console.log('catch block reached'))
   }
 }
 
