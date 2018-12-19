@@ -10,17 +10,18 @@ import DataSelector from './components/DataSelector';
 class App extends Component {
   state = {
     crimeCategories: [{}],
-    lastUpdate : ''
+    lastUpdate : '',
+    crimeData: []
   }
 
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <h1>Hello World</h1>
+          <h1>NC Crime</h1>
         </header>
-        {this.state.crimeData &&<DataVisualisation crimeData={this.state.crimeData} crimeCategories={this.state.crimeCategories} />}
-        {/* <DataSelector setMonth={this.setMonth}/> */}
+        <DataSelector setMonth={this.setMonth}/>
+        {this.state.crimeData.length > 0 &&<DataVisualisation crimeData={this.state.crimeData} crimeCategories={this.state.crimeCategories} /> || <p>Loading...</p>}
       </div>
     );
   }
@@ -31,7 +32,8 @@ class App extends Component {
   }
 componentDidUpdate(prevProps, prevState) {
   if (this.state.lastUpdate !== prevState.lastUpdate)
-  {this.getCrimeData()}
+  {this.setState({crimeData: []})
+    this.getCrimeData()}
 }
 
   getCrimeCategories() {
@@ -58,7 +60,8 @@ componentDidUpdate(prevProps, prevState) {
     })
   }
    setMonth = (event) => {
-    console.log(event)
+    console.log(event.target.value)
+    this.setState({lastUpdate: event.target.value})
   }
   getLastCrimeUpdate = () => {
     Axios.get('https://data.police.uk/api/crime-last-updated')
