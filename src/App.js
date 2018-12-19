@@ -5,10 +5,12 @@ import React, { Component } from 'react';
 import './App.css';
 import DataVisualisation from './components/DataVisualisation';
 import Axios from 'axios';
+import DataSelector from './components/DataSelector';
 
 class App extends Component {
   state = {
-    crimeCategories: [{}]
+    crimeCategories: [{}],
+    lastUpdate : ''
   }
 
   render() {
@@ -18,20 +20,26 @@ class App extends Component {
           <h1>Hello World</h1>
         </header>
         {this.state.crimeData &&<DataVisualisation crimeData={this.state.crimeData} crimeCategories={this.state.crimeCategories} />}
+        {/* <DataSelector setMonth={this.setMonth}/> */}
       </div>
     );
   }
 
   componentDidMount() {
-    this.getCrimeCategories()
-    this.getCrimeData()
+   this.getCrimeCategories()
+   this.getLastCrimeUpdate()
   }
+componentDidUpdate(prevProps, prevState) {
+  if (this.state.lastUpdate !== prevState.lastUpdate)
+  {this.getCrimeData()}
+}
+
   getCrimeCategories() {
     Axios.get('https://data.police.uk/api/crime-categories')
       .then((response) => {
         console.log('RESPONSE:')
         console.log(response)
-        this.setState({
+        return this.setState({
           crimeCategories: response.data
         })
       })
@@ -43,9 +51,20 @@ class App extends Component {
   }
 
   getCrimeData = () => {
-    Axios.get('https://data.police.uk/api/crimes-street/all-crime?lat=53.4860839&lng=-2.242446').then((response)=>{
+    const date = this.state.lastUpdate
+    Axios.get(`https://data.police.uk/api/crimes-street/all-crime?lat=53.4860839&lng=-2.242446&date=${date}`).then((response)=>{
     console.log(response)
-    this.setState({crimeData: response.data})
+    return this.setState({crimeData: response.data})
+    })
+  }
+   setMonth = (event) => {
+    console.log(event)
+  }
+  getLastCrimeUpdate = () => {
+    Axios.get('https://data.police.uk/api/crime-last-updated')
+    .then((response)=>{
+      const date = response.data.date.slice(0,7)
+      return this.setState({lastUpdate:  date})
     })
   }
 }
