@@ -35,7 +35,7 @@ class DataVisualisation extends Component {
     };
     return (
       <div>
-        <h2>Rhymes in ^</h2>
+        <h2>Crime in {this.props.selectedMonth}</h2>
         <Pie
           data={data}
           width={100}

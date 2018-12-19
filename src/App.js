@@ -11,7 +11,11 @@ class App extends Component {
   state = {
     crimeCategories: [{}],
     lastUpdate : '',
-    crimeData: []
+    crimeData: [],
+    selectedMonth: {
+      url: '',
+      month: ''
+    }
   }
 
   render() {
@@ -21,55 +25,61 @@ class App extends Component {
           <h1>NC Crime</h1>
         </header>
         <DataSelector setMonth={this.setMonth}/>
-        {this.state.crimeData.length > 0 &&<DataVisualisation crimeData={this.state.crimeData} crimeCategories={this.state.crimeCategories} /> || <p>Loading...</p>}
+        {this.state.crimeData.length > 0 &&<DataVisualisation crimeData={this.state.crimeData} selectedMonth={this.state.selectedMonth.month} crimeCategories={this.state.crimeCategories} /> || <p>Loading...</p>}
       </div>
     );
   }
 
   componentDidMount() {
-   this.getCrimeCategories()
    this.getLastCrimeUpdate()
+   this.getCrimeCategories()
   }
 componentDidUpdate(prevProps, prevState) {
-  if (this.state.lastUpdate !== prevState.lastUpdate)
+  if (this.state.selectedMonth !== prevState.selectedMonth)
   {this.setState({crimeData: []})
     this.getCrimeData()}
+    console.log(this.state, '@@@@@@@@@@@@@@@@@@')
 }
 
   getCrimeCategories() {
     Axios.get('https://data.police.uk/api/crime-categories')
       .then((response) => {
-        console.log('RESPONSE:')
-        console.log(response)
         return this.setState({
           crimeCategories: response.data
         })
-      })
-      .then(() => {
-        console.log('STATE:')
-        console.log(this.state)
       })
       .catch(console.log('catch block reached'))
   }
 
   getCrimeData = () => {
-    const date = this.state.lastUpdate
+    console.log(this.state)
+    const date = this.state.selectedMonth.url
     Axios.get(`https://data.police.uk/api/crimes-street/all-crime?lat=53.4860839&lng=-2.242446&date=${date}`).then((response)=>{
-    console.log(response)
     return this.setState({crimeData: response.data})
     })
   }
-   setMonth = (event) => {
-    console.log(event.target.value)
-    this.setState({lastUpdate: event.target.value})
-  }
+  
   getLastCrimeUpdate = () => {
     Axios.get('https://data.police.uk/api/crime-last-updated')
     .then((response)=>{
       const date = response.data.date.slice(0,7)
-      return this.setState({lastUpdate:  date})
+      return this.setState({lastUpdate:  date,}, ()=>{
+        this.setMonth()
+
+      })
     })
   }
+  
+  setMonth = (event) => {
+    const months = ['January','February','March','April','May','June','July','August','September','October']
+    const date = event ? event.target.value : this.state.lastUpdate
+    const month = months[date.slice(-2)-1]
+    
+    this.setState({selectedMonth: {
+     url: date,
+     month: month
+   } })
+ }
 }
 
 export default App;
